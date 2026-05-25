@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Get an instant quote for towing and roadside assistance services in Sacramento. Real-time pricing calculator.">
+    <title>Instant Quote - Tow Riders</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --red: #dc2626;
+            --red-dark: #b91c1c;
+            --red-light: #fef2f2;
+            --bg: #f9fafb;
+            --card: #ffffff;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        /* Emergency Alert Bar */
+        .emergency-alert-bar {
+            background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+            color: white;
+            padding: 12px 20px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 15px;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+        
+        .emergency-alert-bar a {
+            color: white;
+            text-decoration: none;
+            border-bottom: 2px solid white;
+        }
+        
+        /* Header */
+        header {
+            background: var(--card);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--red);
+            text-decoration: none;
+        }
+        
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover,
+        nav a.active {
+            color: var(--red);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.125rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+        
+        /* Service Tiles */
+        .service-tiles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .service-tile {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .service-tile:hover {
+            border-color: var(--red);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.1);
+        }
+        
+        .service-tile.selected {
+            border-color: var(--red);
+            background: var(--red-light);
+        }
+        
+        .service-tile i {
+            font-size: 2rem;
+            color: var(--red);
+            margin-bottom: 0.5rem;
+        }
+        
+        .service-tile .title {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+        
+        /* Grid Layout */
+        .quote-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            align-items: start;
+        }
+        
+        /* Form Card */
+        .form-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .form-row {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-row label {
+            display: block;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-row input,
+        .form-row select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        
+        .form-row input:focus,
+        .form-row select:focus {
+            outline: none;
+            border-color: var(--red);
+        }
+        
+        .form-row .icon-input {
+            position: relative;
+        }
+        
+        .form-row .icon-input i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+        
+        .form-row .icon-input input {
+            padding-left: 2.5rem;
+        }
+        
+        /* Distance Calculation Status */
+        .distance-status {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            color: var(--text-light);
+        }
+        
+        .distance-status.success {
+            color: var(--success);
+        }
+        
+        .distance-status.error {
+            color: var(--red);
+        }
+        
+        /* Price Panel */
+        .price-panel {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 100px;
+        }
+        
+        .price-panel h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+        
+        .price-total {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--red);
+            margin-bottom: 1.5rem;
+        }
+        
+        .price-breakdown {
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            color: var(--text-light);
+        }
+        
+        .price-item.hidden {
+            display: none;
+        }
+        
+        .price-item .label {
+            font-weight: 500;
+        }
+        
+        .price-item .value {
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: var(--red);
+            color: white;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-primary:hover {
+            background: var(--red-dark);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--red);
+            border: 2px solid var(--red);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--red-light);
+        }
+        
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: var(--red);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+            text-decoration: none;
+            transition: transform 0.3s;
+            z-index: 99;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Autocomplete Results */
+        .autocomplete-results {
+            position: relative;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        
+        .autocomplete-results.active {
+            display: block;
+        }
+        
+        .autocomplete-item {
+            padding: 0.75rem;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+        
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+        
+        .autocomplete-item:hover {
+            background: var(--red-light);
+        }
+        
+        .autocomplete-item .name {
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .autocomplete-item .address {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .quote-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .price-panel {
+                position: static;
+            }
+            
+            .service-tiles {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Emergency Alert Bar -->
+    <div class="emergency-alert-bar">
+        🚨 EMERGENCY TOWING? <a href="tel:9255469711">CALL NOW: (925) 546-9711</a> - 20 Minute Response Time
+    </div>
+    
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo">Tow Riders</a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="services.html">Services</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+                <a href="quote.html" class="active">Instant Quote</a>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Get an Instant Quote</h1>
+        <p class="subtitle">Select a service and get your price estimate in seconds</p>
+        
+        <!-- Service Tiles -->
+        <div class="service-tiles">
+            <div class="service-tile" data-service="towing_drivable">
+                <i class="fas fa-car"></i>
+                <div class="title">Towing<br>Drivable Vehicle</div>
+            </div>
+            <div class="service-tile" data-service="towing_nondrivable">
+                <i class="fas fa-truck-pickup"></i>
+                <div class="title">Towing<br>Non-Drivable</div>
+            </div>
+            <div class="service-tile" data-service="jump_start">
+                <i class="fas fa-bolt"></i>
+                <div class="title">Jump Start</div>
+            </div>
+            <div class="service-tile" data-service="tire_change">
+                <i class="fas fa-circle-notch"></i>
+                <div class="title">Tire Change</div>
+            </div>
+            <div class="service-tile" data-service="lockout">
+                <i class="fas fa-key"></i>
+                <div class="title">Lockout</div>
+            </div>
+            <div class="service-tile" data-service="fuel_delivery">
+                <i class="fas fa-gas-pump"></i>
+                <div class="title">Fuel Delivery</div>
+            </div>
+        </div>
+        
+        <!-- Quote Grid -->
+        <div class="quote-grid">
+            <!-- Left: Form -->
+            <div class="form-card">
+                <h2 style="margin-bottom: 1.5rem;">Quote Details</h2>
+                
+                <div class="form-row">
+                    <label for="vehicleType">Vehicle Type</label>
+                    <select id="vehicleType">
+                        <option value="sedan">Sedan</option>
+                        <option value="suv">SUV</option>
+                        <option value="truck">Truck</option>
+                        <option value="van">Van</option>
+                        <option value="motorcycle">Motorcycle</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <label for="condition">Condition</label>
+                    <select id="condition">
+                        <option value="drivable">Drivable</option>
+                        <option value="nondrivable">Non-drivable</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <label for="pickup">Pickup Location</label>
+                    <div class="icon-input">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" id="pickup" placeholder="Start typing address... (e.g., Sacramento, CA)">
+                    </div>
+                    <div id="pickup-results" class="autocomplete-results"></div>
+                </div>
+                
+                <div class="form-row">
+                    <label for="dropoff">Drop-off Location (if applicable)</label>
+                    <div class="icon-input">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" id="dropoff" placeholder="Start typing address... (e.g., Elk Grove, CA)">
+                    </div>
+                    <div id="dropoff-results" class="autocomplete-results"></div>
+                    <div id="distanceStatus" class="distance-status"></div>
+                </div>
+                
+                <div class="form-row">
+                    <label for="timeOfDay">Time of Day</label>
+                    <select id="timeOfDay">
+                        <option value="day">Daytime</option>
+                        <option value="night">Late Night (+$40)</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <label for="serviceLevel">Service Level</label>
+                    <select id="serviceLevel">
+                        <option value="standard">Standard</option>
+                        <option value="priority">Priority (+$30)</option>
+                        <option value="rush">Rush (+$60)</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <label for="distance">Distance (miles)</label>
+                    <input type="number" id="distance" placeholder="Auto-calculated or enter manually" min="0" step="0.1" value="5">
+                    <small style="color: #6b7280; font-size: 0.875rem; display: block; margin-top: 0.5rem;">
+                        💡 Select both locations above for automatic distance calculation
+                    </small>
+                </div>
+            </div>
+            
+            <!-- Right: Price Panel -->
+            <div class="price-panel">
+                <h2>Estimated Total</h2>
+                <div class="price-total" id="total">$0</div>
+                
+                <div class="price-breakdown">
+                    <div class="price-item">
+                        <span class="label">Base Fee</span>
+                        <span class="value" id="base">$0</span>
+                    </div>
+                    <div class="price-item" id="distRow">
+                        <span class="label">Distance Fee <span id="distLabel">(0 mi)</span></span>
+                        <span class="value" id="distFee">$0</span>
+                    </div>
+                    <div class="price-item" id="timeRow">
+                        <span class="label">Time of Day</span>
+                        <span class="value" id="timeFee">$0</span>
+                    </div>
+                    <div class="price-item" id="levelRow">
+                        <span class="label">Service Level</span>
+                        <span class="value" id="levelFee">$0</span>
+                    </div>
+                </div>
+                
+                <button type="button" id="continueToReview" class="btn btn-primary" onclick="proceedToReview()">
+                    <i class="fas fa-arrow-right"></i> Continue to Review
+                </button>
+                <a href="tel:9255469711" class="btn btn-secondary">
+                    <i class="fas fa-phone"></i> Call Now: (925) 546-9711
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Floating Action Button -->
+    <a href="tel:9255469711" class="fab">
+        <i class="fas fa-phone"></i>
+    </a>
+    
+    <!-- Google Maps API for Places Autocomplete -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places" async defer></script>
+    
+    <!-- JavaScript with Google Maps integration -->
+    <script src="js/quote.js"></script>
+</body>
+</html>
